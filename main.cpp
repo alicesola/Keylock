@@ -1,4 +1,4 @@
-#include "ui/repl.hpp"
+#include "repl.hpp"
 #include <iostream>
 
 int main()

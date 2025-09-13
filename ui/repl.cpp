@@ -2,11 +2,13 @@
 #include "timeFormat.hpp"
 #include <iostream>
 
-bool accessSystem(const std::string &password)
+bool accessSystem()
 {
+    std::string password;
     std::cout << "=== Login ===\n";
     std::cout << "Enter password: ";
     const std::string correctPassword = "Gensokyo";
+    std::cin >> password;
     if (password == correctPassword)
     {
         std::cout << "Login successful!\n";
