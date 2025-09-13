@@ -1,4 +1,5 @@
 #include "repl.hpp"
+#include "timeFormat.hpp"
 #include <iostream>
 
 bool accessSystem(const std::string &password)
@@ -29,8 +30,10 @@ void menuLogic()
     std::cout << "1. View Data\n";
     std::cout << "2. Flush Data\n";
     std::cout << "3. Find Data\n";
-    std::cout << "4. Exit\n";
-    std::cout << "9. Initialize Data\n";
+    std::cout << "4. Insert Data\n";
+    std::cout << "5. Delete Data\n";
+    std::cout << "6. Update Data\n";
+    std::cout << "7. Exit\n";
     std::cout << "=================\n";
     int choice = 0;
     std::cin >> choice;
@@ -47,6 +50,15 @@ void menuLogic()
         findData(data);
         break;
     case 4:
+        insertData(data);
+        break;
+    case 5:
+        deleteData(data);
+        break;
+    case 6:
+        updateData(data);
+        break;
+    case 7:
         exitApplication();
         break;
     default:
@@ -88,6 +100,42 @@ bool findData(const MemTable &data)
     else
     {
         std::cout << "No entry found for site: " << site << "\n";
+        return false;
+    }
+}
+bool flushData(MemTable &data_)
+{
+    try
+    {
+        data_.flushToDisk();
+        std::cout << "Data flushed to disk successfully.\n";
+        return true;
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "Error flushing data: " << e.what() << "\n";
+        return false;
+    }
+}
+bool insertData(MemTable &data_)
+{
+    passwordData pd;
+    std::cout << "Enter site: ";
+    std::cin >> pd.site;
+    std::cout << "Enter username: ";
+    std::cin >> pd.userName;
+    std::cout << "Enter password: ";
+    std::cin >> pd.password;
+    pd.updatedAt = currentISO8601();
+    try
+    {
+        data_.insert(pd);
+        std::cout << "Data inserted successfully.\n";
+        return true;
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "Error inserting data: " << e.what() << "\n";
         return false;
     }
 }
