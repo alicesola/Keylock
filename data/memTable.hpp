@@ -11,6 +11,7 @@ class MemTable
     public:
     explicit MemTable(const std::string &filePath) : filePath(filePath)
     {
+        std::cout << "Loading data from disk..." << std::endl;
         loadFromDisk();
     }
     passwordData* find(const std::string &site)
@@ -79,6 +80,7 @@ class MemTable
     std::vector<passwordData> data_;
     void loadFromDisk(){
         const std::string rawData = readFile(filePath);
+        std::cout << "Data loaded successfully. Entries count: " << (rawData.empty() ? 0 : parse(rawData).size()) << std::endl;
         data_ = parse(rawData);
     }
 };

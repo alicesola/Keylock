@@ -44,6 +44,7 @@ std::vector<passwordData> parse(const std::string &rawData)
 {
     if (rawData.empty())
     {
+        std::cout << "No data found to parse." << std::endl;
         return {};
     }
     std::vector<passwordData> vault;
