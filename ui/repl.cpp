@@ -28,7 +28,7 @@ bool accessSystem()
 void menuLogic()
 {
     std::cout << "Welcome to the Password Manager!\n";
-    MemTable data("/data/data.json");
+    MemTable data("data\\data.json");
     while (true)
     {
         std::cout << "=== Main Menu ===\n";
