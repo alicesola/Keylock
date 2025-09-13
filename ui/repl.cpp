@@ -1,12 +1,9 @@
 #include "repl.hpp"
 #include <iostream>
 
-void displayLoginUI() {
+bool accessSystem(const std::string& password) {
     std::cout << "=== Login ===\n";
     std::cout << "Enter password: ";
-}
-
-bool login(const std::string& password) {
     const std::string correctPassword = "Gensokyo";
     if (password == correctPassword) {
         std::cout << "Login successful!\n";
@@ -21,4 +18,5 @@ bool login(const std::string& password) {
         return false;
     }
 }
+
 

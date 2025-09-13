@@ -1,7 +1,10 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include"data/memTable.hpp"
 
-void displayLoginUI();
-bool login(const std::string& password);
 void exitApplication();
+bool accessSystem();
+void menuUI();
+bool displaySite(const MemTable& data_);
+bool manuallyFlush(MemTable& data_);
