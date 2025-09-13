@@ -1,18 +1,26 @@
 #include "dataIO.hpp"
+#include <iostream>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 std::string readFile(const std::string &filePath)
 {
+    std::cout << "Reading file: " << filePath << std::endl;
     std::ifstream file(filePath);
-    if (!file.is_open())
+    if (file.is_open())
     {
-        throw std::runtime_error("Could not open file: " + filePath);
+        std::cout << "File opened successfully." << std::endl;
+    }
+    else
+    {
+        std::cerr << "Warning: Could not open file: " << filePath << ". Assuming empty data." << std::endl;
+        return "";
     }
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
     if (rename(filePath.c_str(), (filePath + ".bak").c_str()))
     {
+        std::cerr << "Error: Could not create backup file: " << filePath + ".bak" << std::endl;
         throw std::runtime_error("Could not create backup file: " + filePath + ".bak");
     }
     return content;
