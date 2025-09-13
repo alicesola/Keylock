@@ -34,7 +34,7 @@ void writeFile(const std::string &filePath, const std::string &serializedData)
             throw std::runtime_error("Write failed");
         }
     }
-    if(std::rename(tempFilePath.c_str(), filePath.c_str()) != 0)
+    if (std::rename(tempFilePath.c_str(), filePath.c_str()) != 0)
     {
         std::remove(tempFilePath.c_str());
         throw std::runtime_error("Could not rename temp file to: " + filePath);
@@ -54,4 +54,16 @@ std::vector<passwordData> parse(const std::string &rawData)
         vault.push_back(pd);
     }
     return vault;
+}
+std::string serialize(const std::vector<passwordData> &vault)
+{
+    json j = json::array();
+    for (const auto &pd : vault)
+    {
+        j.push_back({{"site", pd.site},
+                     {"userName", pd.userName},
+                     {"password", pd.password},
+                     {"updatedAt", pd.updatedAt}});
+    }
+    return j.dump(4); // Pretty print with an indent of 4 spaces
 }
