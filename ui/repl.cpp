@@ -1,5 +1,6 @@
 #include "repl.hpp"
 #include "timeFormat.hpp"
+#include <limits>
 #include <iostream>
 
 bool accessSystem()
@@ -31,6 +32,7 @@ void menuLogic()
     MemTable data("data\\data.json");
     while (true)
     {
+        std::cout.flush();
         std::cout << "=== Main Menu ===\n";
         std::cout << "1. View Data\n";
         std::cout << "2. Flush Data\n";
@@ -41,7 +43,14 @@ void menuLogic()
         std::cout << "7. Exit\n";
         std::cout << "=================\n";
         int choice = 0;
-        std::cin >> choice;
+        if(!(std::cin >> choice))
+        {
+            std::cin.clear(); // 清除错误标志
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 丢弃无效输入
+            std::cout << "Invalid input. Please enter a number between 1 and 7.\n";
+            continue;
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 清除输入缓冲区
 
         switch (choice)
         {
