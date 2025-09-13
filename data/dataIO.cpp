@@ -42,6 +42,10 @@ void writeFile(const std::string &filePath, const std::string &serializedData)
 }
 std::vector<passwordData> parse(const std::string &rawData)
 {
+    if (rawData.empty())
+    {
+        return {};
+    }
     std::vector<passwordData> vault;
     auto j = json::parse(rawData);
     for (const auto &item : j)
