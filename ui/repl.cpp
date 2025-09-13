@@ -33,7 +33,6 @@ void menuLogic()
     MemTable data("data\\data.json");
     while (true)
     {
-        system("cls"); // 清屏
         std::cout << "=== Main Menu ===\n";
         std::cout << "1. View Data\n";
         std::cout << "2. Flush Data\n";
@@ -57,21 +56,27 @@ void menuLogic()
         {
         case 1:
             displaySite(data);
+            waitForEnter();
             break;
         case 2:
             flushData(data);
+            waitForEnter();
             break;
         case 3:
             findData(data);
+            waitForEnter();
             break;
         case 4:
             insertData(data);
+            waitForEnter();
             break;
         case 5:
             deleteData(data);
+            waitForEnter();
             break;
         case 6:
             updateData(data);
+            waitForEnter();
             break;
         case 7:
             flushData(data);
@@ -192,4 +197,10 @@ bool updateData(MemTable &data_)
         std::cout << "Error updating data: " << e.what() << "\n";
         return false;
     }
+}
+void waitForEnter()
+{
+    std::cout << "Press Enter to continue...";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.get();
 }
