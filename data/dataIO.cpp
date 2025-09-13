@@ -16,6 +16,7 @@ std::string readFile(const std::string &filePath)
         std::cerr << "Warning: Could not open file: " << filePath << ". Assuming empty data." << std::endl;
         return "";
     }
+    std::cout << "test!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
     if (rename(filePath.c_str(), (filePath + ".bak").c_str()))
