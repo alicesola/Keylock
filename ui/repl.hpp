@@ -5,6 +5,6 @@
 
 void exitApplication();
 bool accessSystem();
-void menuUI();
+void menuLogic();
 bool displaySite(const MemTable& data_);
 bool manuallyFlush(MemTable& data_);
