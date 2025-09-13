@@ -24,6 +24,17 @@ class MemTable
         }
         return nullptr;
     }
+    const passwordData* find(const std::string &site) const
+    {
+        for(const auto &p :data_)
+        {
+            if(p.site == site)
+            {
+                return &p;
+            }
+        }
+        return nullptr;
+    }
     void insert(const passwordData &pd)
     {
         if(find(pd.site))
