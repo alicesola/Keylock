@@ -33,6 +33,7 @@ void menuLogic()
     MemTable data("data\\data.json");
     while (true)
     {
+        system("cls");
         std::cout << "=== Main Menu ===\n";
         std::cout << "1. View Data\n";
         std::cout << "2. Flush Data\n";

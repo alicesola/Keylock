@@ -3,6 +3,7 @@
 #include <string>
 #include "memTable.hpp"
 
+void waitForEnter();
 bool accessSystem();
 void menuLogic();
 bool flushData(MemTable &data_);
