@@ -21,6 +21,7 @@ std::string readFile(const std::string &filePath)
     std::cout << "4.Reading file content." << std::endl;
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
+    std::remove((filePath + ".bak").c_str());
     if (rename(filePath.c_str(), (filePath + ".bak").c_str()))
     {
         std::cerr << "Error: Could not create backup file: " << filePath + ".bak" << std::endl;
