@@ -9,6 +9,7 @@ struct passwordData
     std::string site;
     std::string userName;
     std::string password;
+    std::string updatedAt;
 };
 std::string readFile(const std::string &filePath);
 void writeFile(const std::string &filePath, const std::string &serializedData);
