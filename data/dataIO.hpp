@@ -14,4 +14,3 @@ std::string readFile(const std::string &filePath);
 void writeFile(const std::string &filePath, const std::string &serializedData);
 std::vector<passwordData> parse(const std::string &rawData);
 std::string serialize(const std::vector<passwordData> &vault);
-// git test
