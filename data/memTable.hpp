@@ -62,7 +62,7 @@ class MemTable
        const std::string serializedData = serialize(data_);
         writeFile(filePath, serializedData);
     }
-    ~MemTable(){ flushToDisk(); }
+    ~MemTable() = default;
     private:
     std::string filePath;
     std::vector<passwordData> data_;
