@@ -5,18 +5,20 @@
 using json = nlohmann::json;
 std::string readFile(const std::string &filePath)
 {
-    std::cout << "Reading file: " << filePath << std::endl;
+    std::cout << "1.Reading file: " << filePath << std::endl;
     std::ifstream file(filePath);
-    if (file.is_open())
+    bool isOpen = file.is_open();
+    std::cout << "2.File open status: " << (isOpen ? "Open" : "Not Open") << std::endl;
+    if (isOpen)
     {
-        std::cout << "File opened successfully." << std::endl;
+        std::cout << "3.File opened successfully." << std::endl;
     }
     else
     {
-        std::cerr << "Warning: Could not open file: " << filePath << ". Assuming empty data." << std::endl;
+        std::cerr << "3.Warning: Could not open file: " << filePath << ". Assuming empty data." << std::endl;
         return "";
     }
-    std::cout << "test!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+    std::cout << "4.Reading file content." << std::endl;
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
     if (rename(filePath.c_str(), (filePath + ".bak").c_str()))
