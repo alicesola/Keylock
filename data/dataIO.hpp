@@ -13,5 +13,6 @@ struct passwordData
 };
 std::string readFile(const std::string &filePath);
 void writeFile(const std::string &filePath, const std::string &serializedData);
+void writeFile(const std::string &filePath, const std::vector<unsigned char> &data);
 std::vector<passwordData> parse(const std::string &rawData);
 std::string serialize(const std::vector<passwordData> &vault);
