@@ -5,21 +5,14 @@
 using json = nlohmann::json;
 std::string readFile(const std::string &filePath)
 {
-    std::ifstream file(filePath);
+    std::ifstream file(filePath, std::ios::binary);
     bool isOpen = file.is_open();
     if (!isOpen)
     {
         return "";
     }
-    std::cout << "4.Reading file content." << std::endl;
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
-    std::remove((filePath + ".bak").c_str());
-    if (rename(filePath.c_str(), (filePath + ".bak").c_str()))
-    {
-        std::cerr << "Error: Could not create backup file: " << filePath + ".bak" << std::endl;
-        throw std::runtime_error("Could not create backup file: " + filePath + ".bak");
-    }
     return content;
 }
 std::vector<unsigned char> readBin(const std::string &filePath){
