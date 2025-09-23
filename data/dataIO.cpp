@@ -5,17 +5,10 @@
 using json = nlohmann::json;
 std::string readFile(const std::string &filePath)
 {
-    std::cout << "1.Reading file: " << filePath << std::endl;
     std::ifstream file(filePath);
     bool isOpen = file.is_open();
-    std::cout << "2.File open status: " << (isOpen ? "Open" : "Not Open") << std::endl;
-    if (isOpen)
+    if (!isOpen)
     {
-        std::cout << "3.File opened successfully." << std::endl;
-    }
-    else
-    {
-        std::cerr << "3.Warning: Could not open file: " << filePath << ". Assuming empty data." << std::endl;
         return "";
     }
     std::cout << "4.Reading file content." << std::endl;
@@ -29,6 +22,16 @@ std::string readFile(const std::string &filePath)
     }
     return content;
 }
+std::vector<unsigned char> readBin(const std::string &filePath){
+    std::ifstream file(filePath,std::ios::binary);
+    if(!file){
+        std::cerr << "warrning:could not open file" << std::endl;
+        return {};
+    }
+    std::vector<unsigned char> content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    file.close();
+    return content;
+}
 void writeFile(const std::string &filePath, const std::string &serializedData)
 {
     const std::string tempFilePath = filePath + ".tmp";
@@ -40,6 +43,29 @@ void writeFile(const std::string &filePath, const std::string &serializedData)
         }
 
         file << serializedData;
+        file.flush();
+        if (file.fail())
+        {
+            throw std::runtime_error("Write failed");
+        }
+    }
+    if (std::rename(tempFilePath.c_str(), filePath.c_str()) != 0)
+    {
+        std::remove(tempFilePath.c_str());
+        throw std::runtime_error("Could not rename temp file to: " + filePath);
+    }
+}
+void writeFile(const std::string &filePath, const std::vector<unsigned char> &data)
+{
+    const std::string tempFilePath = filePath + ".tmp";
+    {
+        std::ofstream file(tempFilePath, std::ios::binary);
+        if (!file)
+        {
+            throw std::runtime_error("Could not create file: " + tempFilePath);
+        }
+
+        file.write(reinterpret_cast<const char *>(data.data()), data.size());
         file.flush();
         if (file.fail())
         {
