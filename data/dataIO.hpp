@@ -12,6 +12,7 @@ struct passwordData
     std::string updatedAt;
 };
 std::string readFile(const std::string &filePath);
+std::vector<unsigned char> readBin(const std::string &filePath);
 void writeFile(const std::string &filePath, const std::string &serializedData);
 void writeFile(const std::string &filePath, const std::vector<unsigned char> &data);
 std::vector<passwordData> parse(const std::string &rawData);

@@ -13,4 +13,5 @@ target_include_directories(Keylock PRIVATE
 ${CMAKE_CURRENT_SOURCE_DIR}/data
 ${CMAKE_CURRENT_SOURCE_DIR}/ui
 )
-
+find_package(nlohmann_json CONFIG REQUIRED)   # 找到 vcpkg 里的 nlohmann-json
+target_link_libraries(Keylock PRIVATE nlohmann_json::nlohmann_json)

@@ -8,3 +8,5 @@ build-*/
 *.tmp
 *.obj
 *.out
+CMakePresets.json
+.vscode/
