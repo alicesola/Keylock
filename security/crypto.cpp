@@ -76,11 +76,6 @@ std::string decrypt(const Bytes &blob, const std::string &password)
     Bytes plain(cipher.size());
     int len;
     if (EVP_DecryptUpdate(ctx, plain.data(), &len, cipher.data(), cipher.size()) != 1)
-        throw std::runtime_error("DecryptInit");
-
-    Bytes plain(cipher.size());
-    int len;
-    if (EVP_DecryptUpdate(ctx, plain.data(), &len, cipher.data(), cipher.size()) != 1)
         throw std::runtime_error("DecryptUpdate");
     if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, kTagLen,
                              const_cast<uint8_t *>(tag.data())))
