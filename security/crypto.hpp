@@ -1,5 +1,6 @@
 #pragma once
 #include <argon2.h>
+#include <algorithm>
 #include <openssl/rand.h>
 #include <openssl/evp.h>
 #include <array>
