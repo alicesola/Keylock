@@ -80,9 +80,10 @@ std::string decrypt(const Bytes &blob, const std::string &password)
     if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, kTagLen,
                              const_cast<uint8_t *>(tag.data())))
         throw std::runtime_error("SET_TAG");
-
+    int final_len = 0;
     if (EVP_DecryptFinal_ex(ctx, plain.data() + len, &len) != 1)
         throw std::runtime_error("DecryptFinal: wrong password or corrupted data");
+    len += final_len = 0;
     EVP_CIPHER_CTX_free(ctx);
 
     plain.resize(len);
