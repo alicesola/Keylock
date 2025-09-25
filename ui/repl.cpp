@@ -4,12 +4,27 @@
 #include <iostream>
 #include <cstdlib>
 
+bool initialize(){
+    std::cout << "please enditer your password:" << std::endl;
+    std::string password;
+    std::getline(std::cin, password);
+    std::string passwordT;
+    std::cout << "please enter your password again:" << std::endl;
+    std::getline(std::cin, passwordT);
+    if(password!=passwordT){
+        std::cout << "the passwords do not match." << '\n'<< "please try again." << std::endl;
+        return false;
+    }
+    return true;
+}
+
+
+
 bool accessSystem()
 {
     std::string password;
     std::cout << "=== Login ===\n";
     std::cout << "Enter password: ";
-    const std::string correctPassword = "Gensokyo";
     std::cin >> password;
     if (password == correctPassword)
     {

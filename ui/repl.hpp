@@ -14,4 +14,6 @@ bool manuallyFlush(MemTable &data_);
 bool insertData(MemTable &data_);
 bool deleteData(MemTable &data_);
 bool updateData(MemTable &data_);
-bool initialize(const std::string &password);
+bool initialize();
+std::string getpass_unix(const char *prompt);
+std::string getpass_win(const char *prompt);
