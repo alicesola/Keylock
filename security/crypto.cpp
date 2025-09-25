@@ -6,7 +6,7 @@ Bytes deriveKey(const std::string &password, const std::array<uint8_t, kSaltLen>
     if (password.empty())
         throw std::invalid_argument("Password cannot be empty");
     Bytes key(kKeyLen);
-    if (argon2id_hash_raw(3, 1 << 16, 1, password.data(), password.size(), salt.data(), salt.size(), key.data(), key.size()) != ARGON2_OK)
+    if (argon2id_hash_raw(3u, 1u << 16, 1u, password.data(), password.size(), salt.data(), salt.size(), key.data(), key.size()) != ARGON2_OK)
         throw std::runtime_error("Argon2 failed");
     return key;
 }
@@ -22,27 +22,25 @@ Bytes encrypt(const std::string &plainText, const std::string &password)
     Bytes key = deriveKey(password, salt);
 
     // AES-256-GCM
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-    if (!ctx)
+    CtxPtr ctx(EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free);
+    if (!ctx.get())
         throw std::runtime_error("CTX_new");
-    if (EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), nullptr, key.data(), iv.data()) != 1)
+    if (EVP_EncryptInit_ex(ctx.get(), EVP_aes_256_gcm(), nullptr, key.data(), iv.data()) != 1)
         throw std::runtime_error("EncryptInit");
 
     Bytes cipher(plainText.size());
     int len;
-    if (EVP_EncryptUpdate(ctx, cipher.data(), &len, reinterpret_cast<const uint8_t *>(plainText.data()), plainText.size()) != 1)
+    if (EVP_EncryptUpdate(ctx.get(), cipher.data(), &len, reinterpret_cast<const uint8_t *>(plainText.data()), plainText.size()) != 1)
         throw std::runtime_error("EncryptUpdate");
     size_t cipher_len = len;
-    if (EVP_EncryptFinal_ex(ctx, cipher.data() + cipher_len, &len) != 1)
+    if (EVP_EncryptFinal_ex(ctx.get(), cipher.data() + cipher_len, &len) != 1)
         throw std::runtime_error("EncryptFinal");
     cipher_len += len;
     cipher.resize(cipher_len);
 
     Bytes tag(kTagLen);
-    if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, kTagLen, tag.data()) != 1)
+    if (EVP_CIPHER_CTX_ctrl(ctx.get(), EVP_CTRL_GCM_GET_TAG, kTagLen, tag.data()) != 1)
         throw std::runtime_error("GET_TAG");
-    EVP_CIPHER_CTX_free(ctx);
-
     // 打包盐，向量，标签等
     Bytes out;
     out.reserve(kSaltLen + kIvLen + kTagLen + cipher.size());
@@ -68,24 +66,22 @@ std::string decrypt(const Bytes &blob, const std::string &password)
     // 派生同一密钥
     Bytes key = deriveKey(password, salt);
     // 同算法解密
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    CtxPtr ctx(EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free);
     if (!ctx)
         throw std::runtime_error("CTX_new");
-    if (EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), nullptr, key.data(), iv.data()) != 1)
+    if (EVP_DecryptInit_ex(ctx.get(), EVP_aes_256_gcm(), nullptr, key.data(), iv.data()) != 1)
         throw std::runtime_error("DecryptInit");
     Bytes plain(cipher.size());
     int len;
-    if (EVP_DecryptUpdate(ctx, plain.data(), &len, cipher.data(), cipher.size()) != 1)
+    if (EVP_DecryptUpdate(ctx.get(), plain.data(), &len, cipher.data(), cipher.size()) != 1)
         throw std::runtime_error("DecryptUpdate");
-    if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, kTagLen,
+    if (!EVP_CIPHER_CTX_ctrl(ctx.get(), EVP_CTRL_GCM_SET_TAG, kTagLen,
                              const_cast<uint8_t *>(tag.data())))
         throw std::runtime_error("SET_TAG");
     int final_len = 0;
-    if (EVP_DecryptFinal_ex(ctx, plain.data() + len, &final_len) != 1)
+    if (EVP_DecryptFinal_ex(ctx.get(), plain.data() + len, &final_len) != 1)
         throw std::runtime_error("DecryptFinal: wrong password or corrupted data");
     len += final_len;
-    EVP_CIPHER_CTX_free(ctx);
-
     plain.resize(len);
     return std::string(plain.begin(), plain.end());
 }

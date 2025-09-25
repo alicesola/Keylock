@@ -1,6 +1,7 @@
 #pragma once
 #include <argon2.h>
 #include <algorithm>
+#include <memory>
 #include <openssl/rand.h>
 #include <openssl/evp.h>
 #include <array>
@@ -14,6 +15,7 @@ constexpr std::size_t kTagLen = 16; //认证标签
 constexpr std::size_t kSaltLen = 16;//盐长度
 
 using Bytes = std::vector<unsigned char>;
+using CtxPtr = std::unique_ptr<EVP_CIPHER_CTX, decltype(&EVP_CIPHER_CTX_free)>;
 
 Bytes deriveKey(const std::string &password, const std::array<uint8_t, kSaltLen> &salt);
 
