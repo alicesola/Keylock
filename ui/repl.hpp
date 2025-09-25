@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "memTable.hpp"
+#include "crypto.hpp"
 
 void waitForEnter();
 bool accessSystem();
@@ -13,3 +14,4 @@ bool manuallyFlush(MemTable &data_);
 bool insertData(MemTable &data_);
 bool deleteData(MemTable &data_);
 bool updateData(MemTable &data_);
+bool initialize(const std::string &password);
