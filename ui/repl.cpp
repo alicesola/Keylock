@@ -1,21 +1,55 @@
 #include "repl.hpp"
-#include "timeFormat.hpp"
-#include <limits>
-#include <iostream>
-#include <cstdlib>
-
+#ifdef _WIN32
+std::string getpass(const char* p){
+    return getpass_win(p);
+}
+#else
+std::string getpass(const char* p){
+    return getpass_unix(p);
+}
+#endif
 bool initialize(){
-    std::cout << "please enditer your password:" << std::endl;
-    std::string password;
-    std::getline(std::cin, password);
-    std::string passwordT;
-    std::cout << "please enter your password again:" << std::endl;
-    std::getline(std::cin, passwordT);
-    if(password!=passwordT){
-        std::cout << "the passwords do not match." << '\n'<< "please try again." << std::endl;
+    std::string pw1 = getpass("Enter password: ");
+    std::string pw2 = getpass("Enter password again: ");
+    if(pw1!=pw2){
+        std::cout << "The password do not match! Please try again" << std::endl;
         return false;
     }
     return true;
+}
+std::string getpass_win(const char*prompt){
+    std::cout << prompt << std::flush;
+
+    const char BACKSPACE = 8;
+    const char ENTER = 13;
+    std::string pw;
+    char ch;
+    while((ch=_getch())!=ENTER)
+    {
+        if(ch==BACKSPACE&&!pw.empty()){
+            pw.pop_back();
+            std::cout << "\b \b";
+        }
+        else if(ch != BACKSPACE){
+            pw.push_back(ch);
+            std::cout << '*';
+        }
+    }
+    std::cout << '\n';
+    return pw;
+}
+std::string getpass_unix(const char*prompt){
+    std::cout << prompt << std::flush;
+    termios oldt{}, newt{};
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflg &= ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    std::string pw;
+    std::getline(std::cin, pw);
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    std::cout << '\n';
+    return pw;
 }
 
 
