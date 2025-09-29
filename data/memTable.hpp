@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "dataIO.hpp"
 #include <vector>
 #include <string>

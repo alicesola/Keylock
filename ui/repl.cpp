@@ -1,36 +1,61 @@
 #include "repl.hpp"
+
+std::string getpass_win(const char *prompt);
+std::string getpass_unix(const char *prompt);
 #ifdef _WIN32
-std::string getpass(const char* p){
+std::string getpass(const char *p)
+{
     return getpass_win(p);
 }
 #else
-std::string getpass(const char* p){
+std::string getpass(const char *p)
+{
     return getpass_unix(p);
 }
 #endif
-bool initialize(){
+
+bool displaySite(const MemTable &data);
+bool flushData(MemTable &data);
+bool findData(const MemTable &data);
+bool insertData(MemTable &data);
+bool deleteData(MemTable &data);
+bool updateData(MemTable &data);
+
+bool initialize()
+{
+    std::cout << "initializing........." << std::endl;
     std::string pw1 = getpass("Enter password: ");
     std::string pw2 = getpass("Enter password again: ");
-    if(pw1!=pw2){
+    if (pw1 != pw2)
+    {
         std::cout << "The password do not match! Please try again" << std::endl;
         return false;
     }
+    std::vector<passwordData> empty;
+    std::string json = serialize(empty);
+    Bytes cipher = encrypt(json, pw1);
+    writeFile("vault.bin", cipher);
+    std::cout << "initializeVault done" << std::endl;
     return true;
 }
-std::string getpass_win(const char*prompt){
+#ifdef _WIN32
+std::string getpass_win(const char *prompt)
+{
     std::cout << prompt << std::flush;
 
     const char BACKSPACE = 8;
     const char ENTER = 13;
     std::string pw;
     char ch;
-    while((ch=_getch())!=ENTER)
+    while ((ch = _getch()) != ENTER)
     {
-        if(ch==BACKSPACE&&!pw.empty()){
+        if (ch == BACKSPACE && !pw.empty())
+        {
             pw.pop_back();
             std::cout << "\b \b";
         }
-        else if(ch != BACKSPACE){
+        else if (ch != BACKSPACE)
+        {
             pw.push_back(ch);
             std::cout << '*';
         }
@@ -38,7 +63,9 @@ std::string getpass_win(const char*prompt){
     std::cout << '\n';
     return pw;
 }
-std::string getpass_unix(const char*prompt){
+#else
+std::string getpass_unix(const char *prompt)
+{
     std::cout << prompt << std::flush;
     termios oldt{}, newt{};
     tcgetattr(STDIN_FILENO, &oldt);
@@ -51,30 +78,20 @@ std::string getpass_unix(const char*prompt){
     std::cout << '\n';
     return pw;
 }
-
-
+#endif
 
 bool accessSystem()
 {
-    std::string password;
-    std::cout << "=== Login ===\n";
-    std::cout << "Enter password: ";
-    std::cin >> password;
-    if (password == correctPassword)
+    std::cout << "Checking vault data............";
+    if (std::filesystem::exists("vault.bin"))
     {
-        std::cout << "Login successful!\n";
-        return true;
-    }
-    else if (password == "hint")
-    {
-        std::cout << "Where you want to see";
-        return false;
+        std::cout << "vault exist!" << std::endl;
     }
     else
     {
-        std::cout << "Login failed. Incorrect password.\n";
         return false;
     }
+    return true;
 }
 void menuLogic()
 {
