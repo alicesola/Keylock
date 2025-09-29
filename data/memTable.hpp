@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <stdexcept>
+#include "crypto.hpp"
 
 class MemTable
 {
@@ -78,9 +79,11 @@ class MemTable
     ~MemTable() = default;
     private:
     std::string filePath;
+    std::string password;
     std::vector<passwordData> data_;
     void loadFromDisk(){
-        const std::string rawData = readFile(filePath);
+
+        const std::string rawData = decrypt(readBin(filePath),password);
         std::cout << "Data loaded successfully. Entries count: " << (rawData.empty() ? 0 : parse(rawData).size()) << std::endl;
         data_ = parse(rawData);
     }

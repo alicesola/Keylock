@@ -96,7 +96,7 @@ bool accessSystem()
 void menuLogic()
 {
     std::cout << "Welcome to the Password Manager!\n";
-    MemTable data("data\\data.json");
+    MemTable data("data\\vault.bin");
     while (true)
     {
         system("cls");
