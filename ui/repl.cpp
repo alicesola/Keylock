@@ -83,7 +83,13 @@ std::string getpass_unix(const char *prompt)
 bool accessSystem()
 {
     std::cout << "Checking vault data............";
+    //检查是否有文件夹存在，没有就创建
+    if (!std::filesystem::exists("vault"))
+    {
+        std::filesystem::create_directory("vault");
+    }
     std::string vaultPath = findFilePath();
+    //检查是否有数据文件存在
     if (!vaultPath.empty())
     {
         std::cout << "vault exist!" << std::endl;
