@@ -10,28 +10,28 @@
 
 class MemTable
 {
-    public:
-    explicit MemTable(const std::string &filePath) : filePath(filePath)
+public:
+    explicit MemTable(const std::string &filePath, const std::string &password) : filePath(filePath), password(password)
     {
         std::cout << "Loading data from disk..." << std::endl;
         loadFromDisk();
     }
-    passwordData* find(const std::string &site)
+    passwordData *find(const std::string &site)
     {
-        for(auto &p :data_)
+        for (auto &p : data_)
         {
-            if(p.site == site)
+            if (p.site == site)
             {
                 return &p;
             }
         }
         return nullptr;
     }
-    const passwordData* find(const std::string &site) const
+    const passwordData *find(const std::string &site) const
     {
-        for(const auto &p :data_)
+        for (const auto &p : data_)
         {
-            if(p.site == site)
+            if (p.site == site)
             {
                 return &p;
             }
@@ -40,7 +40,7 @@ class MemTable
     }
     void insert(const passwordData &pd)
     {
-        if(find(pd.site))
+        if (find(pd.site))
         {
             throw std::runtime_error("Entry for site already exists: " + pd.site);
         }
@@ -48,7 +48,7 @@ class MemTable
     }
     void update(const passwordData &pd)
     {
-        if(passwordData* p=find(pd.site))
+        if (passwordData *p = find(pd.site))
         {
             *p = pd;
         }
@@ -59,31 +59,35 @@ class MemTable
     }
     bool remove(const std::string &site)
     {
-        auto it = std::remove_if(data_.begin(),data_.end(), [&](const passwordData &pd){ return pd.site == site; });
-        if(it == data_.end())
+        auto it = std::remove_if(data_.begin(), data_.end(), [&](const passwordData &pd)
+                                 { return pd.site == site; });
+        if (it == data_.end())
         {
             return false;
         }
         data_.erase(it, data_.end());
         return true;
     }
-    const std::vector<passwordData>& getAll() const
+    const std::vector<passwordData> &getAll() const
     {
         return data_;
     }
     void flushToDisk()
     {
-       const std::string serializedData = serialize(data_);
-        writeFile(filePath, serializedData);
+        const std::string serializedData = serialize(data_);
+        writeFile(filePath,
+                  encrypt(serializedData, password));
     }
     ~MemTable() = default;
-    private:
+
+private:
     std::string filePath;
     std::string password;
     std::vector<passwordData> data_;
-    void loadFromDisk(){
+    void loadFromDisk()
+    {
 
-        const std::string rawData = decrypt(readBin(filePath),password);
+        const std::string rawData = decrypt(readBin(filePath), password);
         std::cout << "Data loaded successfully. Entries count: " << (rawData.empty() ? 0 : parse(rawData).size()) << std::endl;
         data_ = parse(rawData);
     }

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <filesystem>
+#include <exception>
 #ifdef _WIN32
 #include <conio.h>
 #else
@@ -18,3 +19,4 @@ void waitForEnter();
 bool accessSystem();
 void menuLogic();
 bool initialize();
+void writeLogFile(const std::exception&ex);

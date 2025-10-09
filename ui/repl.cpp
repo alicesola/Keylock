@@ -89,14 +89,27 @@ bool accessSystem()
     }
     else
     {
-        return false;
+        int count = 0;
+        std::cout << "No data initializing......" << std::endl;
+        while (!initialize())
+        {
+            count++;
+            if (count > 10)
+            {
+                std::cout << "Initializing failed" << std::endl;
+                return false;
+            }
+        };
     }
     return true;
 }
 void menuLogic()
 {
-    std::cout << "Welcome to the Password Manager!\n";
-    MemTable data("data\\vault.bin");
+    std::cout << "Welcome to the Password Manager!\n"
+              << "Please enter the vault`s password\n";
+    std::string pw1 = getpass("Enter password: ");
+
+    MemTable data("vault.bin", pw1);
     while (true)
     {
         system("cls");
@@ -270,4 +283,35 @@ void waitForEnter()
     std::cout << "Press Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
+}
+std::string now_str()
+{
+    std::time_t t = std::time(nullptr);
+    char buf[32]{};
+    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&t));
+    return buf;
+}
+void log_exception(const std::exception &e, std::ostream &os, int depth = 0)
+{
+    os << now_str() << "[error]" << std::string(depth * 2, ' ') << "exception(" << typeid(e).name() << "):" << e.what() << '\n';
+    try
+    {
+        std::rethrow_if_nested(e);
+    }
+    catch (const std::exception &nested)
+    {
+        log_exception(nested, os, depth + 1);
+    }
+    catch (...)
+    {
+        os << now_str() << "[error]" << std::string((depth + 1) * 2, ' ') << "unknown nested exception\n";
+    }
+}
+void writeLogFile(const std::exception &ex)
+{
+    if (std::ofstream log("crash.log", std::ios::app); log)
+    {
+        log_exception(ex, log);
+        log << "---------------------------------------------\n";
+    }
 }
