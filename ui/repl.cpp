@@ -82,14 +82,14 @@ std::string getpass_unix(const char *prompt)
 
 bool accessSystem()
 {
-    std::cout << "Checking vault data............";
-    //检查是否有文件夹存在，没有就创建
+    std::cout << "Checking vault data............" << std::endl;
+    // 检查是否有文件夹存在，没有就创建
     if (!std::filesystem::exists("vault"))
     {
         std::filesystem::create_directory("vault");
     }
     std::string vaultPath = findFilePath();
-    //检查是否有数据文件存在
+    // 检查是否有数据文件存在
     if (!vaultPath.empty())
     {
         std::cout << "vault exist!" << std::endl;
@@ -97,7 +97,6 @@ bool accessSystem()
     else
     {
         int count = 0;
-        std::cout << "No data initializing......" << std::endl;
         while (!initialize())
         {
             count++;
@@ -216,7 +215,7 @@ bool flushData(MemTable &data_)
 {
     try
     {
-        data_.flushToDisk("vault-" + currentISO8601() + ".bin");
+        data_.flushToDisk("vault/vault-" + currentISO8601() + ".bin");
         std::cout << "Data flushed to disk successfully.\n";
         return true;
     }
