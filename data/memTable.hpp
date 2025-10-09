@@ -72,7 +72,7 @@ public:
     {
         return data_;
     }
-    void flushToDisk()
+    void flushToDisk(std::string filePath)
     {
         const std::string serializedData = serialize(data_);
         writeFile(filePath,

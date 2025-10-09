@@ -17,6 +17,6 @@ inline std::string currentISO8601()
 #endif
 
     std::ostringstream oss;
-    oss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S");
-    return oss.str();                   // 例：2023-06-22T15:30:45
+    oss << std::put_time(&tm, "%Y-%m-%dT%H-%M-%S");
+    return oss.str();                   // 例：2023-06-22T15-30-45
 }
