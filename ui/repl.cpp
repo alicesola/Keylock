@@ -34,7 +34,7 @@ bool initialize()
     std::vector<passwordData> empty;
     std::string json = serialize(empty);
     Bytes cipher = encrypt(json, pw1);
-    writeFile("vault-" + currentISO8601() + ".bin", cipher);
+    writeFile("vault/vault-" + currentISO8601() + ".bin", cipher);
     std::cout << "initializeVault done" << std::endl;
     return true;
 }
@@ -80,10 +80,10 @@ std::string getpass_unix(const char *prompt)
 }
 #endif
 
-std::string vaultPath = findFile::findFilePath();
 bool accessSystem()
 {
     std::cout << "Checking vault data............";
+    std::string vaultPath = findFilePath();
     if (!vaultPath.empty())
     {
         std::cout << "vault exist!" << std::endl;
@@ -109,6 +109,7 @@ void menuLogic()
     std::cout << "Welcome to the Password Manager!\n"
               << "Please enter the vault`s password\n";
     std::string pw1 = getpass("Enter password: ");
+    std::string vaultPath = findFilePath();
 
     MemTable data(vaultPath, pw1);
     while (true)

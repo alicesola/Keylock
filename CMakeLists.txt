@@ -8,6 +8,7 @@ add_executable(Keylock
     Cli_main.cpp
     ui/repl.cpp
     data/dataIO.cpp
+    data/findFilePath.cpp
     security/crypto.cpp
 )
 
