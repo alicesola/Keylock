@@ -1,4 +1,8 @@
 #pragma once
 #include <filesystem>
 #include <regex>
-    std::string findFilePath(const std::string &dir = "vault");
+#include <algorithm>
+#include <string>
+#include <vector>
+
+std::string findFilePath(const std::string &dir = "vault");
